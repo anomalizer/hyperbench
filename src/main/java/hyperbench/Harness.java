@@ -108,8 +108,8 @@ public class Harness implements Runnable {
 
                 ch.write(request);
             } else {
-                logger.error("connection failed {}", future.getCause().getMessage());
                 requestCleanup();
+                logger.error("connection failed {}", future.getCause().getMessage());
             }
         }
     }
@@ -117,8 +117,8 @@ public class Harness implements Runnable {
     private class RequestCleanup implements ChannelFutureListener {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
-            logger.info("all done");
             requestCleanup();
+            logger.info("all done");
         }
     }
 }
