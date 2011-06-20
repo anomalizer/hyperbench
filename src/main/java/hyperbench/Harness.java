@@ -1,6 +1,5 @@
 package hyperbench;
 
-import org.jboss.netty.bootstrap.Bootstrap;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;
@@ -74,7 +73,7 @@ public class Harness implements Runnable {
             requests.incrementAndGet();
 
             logger.info("connecting");
-            ChannelFuture future = bootstrap.connect(new InetSocketAddress(r.getHost(), r.getPort()));
+            ChannelFuture future = bootstrap.connect(new InetSocketAddress(r.getHostAddress(), r.getPort()));
             future.addListener(new ConnectHandler(r));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

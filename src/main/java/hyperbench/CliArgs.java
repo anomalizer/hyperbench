@@ -13,5 +13,5 @@ public class CliArgs {
     public int requests = 1;
 
     @Parameter(names = "-c", description = "Max concurrency")
-    public short concurrency = 1;
+    public int concurrency = 1;
 }

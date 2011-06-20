@@ -1,6 +1,5 @@
 package hyperbench;
 
-import java.net.URL;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;

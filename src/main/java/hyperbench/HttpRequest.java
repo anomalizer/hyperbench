@@ -1,19 +1,25 @@
 package hyperbench;
 
-import java.net.MalformedURLException;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.UnknownHostException;
 
 /**
  */
 public class HttpRequest {
     private URI url;
+    private InetAddress addr;
+    private String host;
 
     public void setUrl(String urlString){
         try {
             this.url = new URI(urlString);
+            host = url.getHost();
+            addr = InetAddress.getByName(host);
         } catch (URISyntaxException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (UnknownHostException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         String protocol = url.getScheme();
@@ -22,8 +28,12 @@ public class HttpRequest {
         }
     }
 
+    public InetAddress getHostAddress() {
+        return addr;
+    }
+
     public String getHost() {
-        return url.getHost();
+        return host;
     }
 
     public int getPort() {
