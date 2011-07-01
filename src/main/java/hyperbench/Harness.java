@@ -23,14 +23,14 @@ public class Harness implements Runnable {
 
     final static Logger logger = LoggerFactory.getLogger(Harness.class);
 
-    private final Iterator<HttpRequest> iter;
+    private final Iterator<HttpRequestPrototype> iter;
     private final Semaphore concurrencyLimiter;
     private final ClientBootstrap bootstrap;
 
     private final AtomicInteger requests = new AtomicInteger();
     private final AtomicInteger responses = new AtomicInteger();
 
-    public Harness(Iterator<HttpRequest> requests, int maxConcurrency) {
+    public Harness(Iterator<HttpRequestPrototype> requests, int maxConcurrency) {
         iter = requests;
         concurrencyLimiter = new Semaphore(maxConcurrency);
         bootstrap = NettyUtils.getClientBootstrap();
@@ -41,7 +41,7 @@ public class Harness implements Runnable {
         logger.info("Starting the test");
         while(true) {
             try {
-                HttpRequest r = iter.next();
+                HttpRequestPrototype r = iter.next();
                 fire(r);
             } catch(NoSuchElementException e){
                 logger.info("All requests issued");
@@ -66,7 +66,7 @@ public class Harness implements Runnable {
         logger.info("end of test...............................................................");
     }
 
-    private void fire(HttpRequest r) {
+    private void fire(HttpRequestPrototype r) {
         logger.debug("Trying to get a ticket");
         try {
             concurrencyLimiter.acquire();
@@ -86,10 +86,10 @@ public class Harness implements Runnable {
     }
 
     private class ConnectHandler implements  ChannelFutureListener {
-        private final HttpRequest r;
+        private final HttpRequestPrototype r;
         private final RequestCleanup rc = new RequestCleanup();
 
-        public ConnectHandler(HttpRequest r) {
+        public ConnectHandler(HttpRequestPrototype r) {
             this.r = r;
         }
 
@@ -102,11 +102,7 @@ public class Harness implements Runnable {
                 Channel ch = future.getChannel();
                 ch.getCloseFuture().addListener(rc);
 
-                org.jboss.netty.handler.codec.http.HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, r.getUriString());
-                request.setHeader(HttpHeaders.Names.HOST, r.getHost());
-                request.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-
-                ch.write(request);
+                ch.write(r.getHttpRequest());
             } else {
                 requestCleanup();
                 logger.error("connection failed {}", future.getCause().getMessage());

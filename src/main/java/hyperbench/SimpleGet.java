@@ -8,25 +8,25 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SimpleGet implements LoadSet {
 
-    private final HttpRequest req;
+    private final HttpRequestPrototype req;
     private final int count;
 
     public SimpleGet(String url, int count) {
         if(count < 1) {
             throw new RuntimeException("count must be greater than 1");
         }
-        req = new HttpRequest();
+        req = new HttpRequestPrototype();
         req.setUrl(url);
 
         this.count = count;
     }
 
     @Override
-    public Iterator<HttpRequest> iterator() {
+    public Iterator<HttpRequestPrototype> iterator() {
         return new SimpleGetIterator();
     }
 
-    private class SimpleGetIterator implements Iterator<HttpRequest> {
+    private class SimpleGetIterator implements Iterator<HttpRequestPrototype> {
 
         private final AtomicInteger i = new AtomicInteger(0);
 
@@ -36,7 +36,7 @@ public class SimpleGet implements LoadSet {
         }
 
         @Override
-        public HttpRequest next() {
+        public HttpRequestPrototype next() {
             if(i.getAndIncrement() < count) {
                 return req;
             }
