@@ -87,6 +87,7 @@ public class Harness implements Runnable {
 
     private class ConnectHandler implements  ChannelFutureListener {
         private final HttpRequest r;
+        private final RequestCleanup rc = new RequestCleanup();
 
         public ConnectHandler(HttpRequest r) {
             this.r = r;
@@ -99,7 +100,7 @@ public class Harness implements Runnable {
                 logger.info("connected successfully");
 
                 Channel ch = future.getChannel();
-                ch.getCloseFuture().addListener(new RequestCleanup());
+                ch.getCloseFuture().addListener(rc);
 
                 org.jboss.netty.handler.codec.http.HttpRequest request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, r.getUriString());
                 request.setHeader(HttpHeaders.Names.HOST, r.getHost());
