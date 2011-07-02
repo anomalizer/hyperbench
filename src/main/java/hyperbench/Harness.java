@@ -68,7 +68,7 @@ public class Harness implements Runnable {
             concurrencyLimiter.acquire();
             requests.incrementAndGet();
 
-            logger.info("connecting");
+            logger.debug("connecting");
             ChannelFuture future = bootstrap.connect(new InetSocketAddress(r.getHostAddress(), r.getPort()));
             future.addListener(new ConnectHandler(r));
         } catch (InterruptedException e) {
@@ -93,7 +93,7 @@ public class Harness implements Runnable {
         public void operationComplete(ChannelFuture future) throws Exception {
             if(future.isSuccess()) {
                 // Go do actual request
-                logger.info("connected successfully");
+                logger.debug("connected successfully");
 
                 Channel ch = future.getChannel();
                 ch.getCloseFuture().addListener(rc);
@@ -110,7 +110,7 @@ public class Harness implements Runnable {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             requestCleanup();
-            logger.info("all done");
+            logger.debug("finished one request");
         }
     }
 }
