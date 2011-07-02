@@ -19,20 +19,15 @@ public class HttpRequestPrototype {
     private String host = null;
     private HttpRequest request;
 
-    public void setUrl(String urlString){
-        try {
-            this.url = new URI(urlString);
-            host = url.getHost();
-            addr = InetAddress.getByName(host);
+    public void setUrl(String urlString) throws URISyntaxException, UnknownHostException {
+        this.url = new URI(urlString);
+        host = url.getHost();
+        addr = InetAddress.getByName(host);
 
-            request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, getUriString());
-            request.setHeader(HttpHeaders.Names.HOST, getHost());
-            request.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (UnknownHostException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, getUriString());
+        request.setHeader(HttpHeaders.Names.HOST, getHost());
+        request.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
+
         String protocol = url.getScheme();
         if( !("http".equals(protocol)) ) {
             throw new UnsupportedOperationException("Protocol " + protocol + "is not supported");

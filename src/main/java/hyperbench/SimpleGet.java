@@ -1,8 +1,8 @@
 package hyperbench;
 
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  */
@@ -16,7 +16,13 @@ public class SimpleGet implements LoadSet {
             throw new RuntimeException("count must be greater than 1");
         }
         req = new HttpRequestPrototype();
-        req.setUrl(url);
+        try {
+            req.setUrl(url);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (UnknownHostException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
         this.count = count;
     }

@@ -1,19 +1,16 @@
 package hyperbench;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.yaml.snakeyaml.Yaml;
 
-import javax.print.attribute.Size2DSyntax;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileLoad implements LoadSet{
     private final List<HttpRequestPrototype> testRequests = new ArrayList<HttpRequestPrototype>();
@@ -39,8 +36,14 @@ public class FileLoad implements LoadSet{
 
             if(methodName.equals("GET")) {
                 HttpRequestPrototype oneRequest = new HttpRequestPrototype();
-                oneRequest.setUrl(url);
-                testRequests.add(oneRequest);
+                try {
+                    oneRequest.setUrl(url);
+                    testRequests.add(oneRequest);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
             }
         }
         size = testRequests.size();
