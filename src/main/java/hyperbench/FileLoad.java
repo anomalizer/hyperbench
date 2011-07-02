@@ -62,10 +62,7 @@ public class FileLoad implements LoadSet{
 
         @Override
         public HttpRequestPrototype doNext(int curr, int max) {
-            if(size > 1)
-                return testRequests.get(curr % max);
-            else
-                return  testRequests.get(0);
+            return testRequests.get(curr % size);
         }
     }
 }
