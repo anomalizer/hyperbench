@@ -48,32 +48,21 @@ public class FileLoad implements LoadSet{
 
     @Override
     public Iterator<HttpRequestPrototype> iterator() {
-        return new FileLoadIterator();
+        return new FileLoadIterator(count);
     }
 
-    private class FileLoadIterator implements Iterator<HttpRequestPrototype> {
-        private final AtomicInteger i = new AtomicInteger(0);
+    private class FileLoadIterator extends CappedIterator<HttpRequestPrototype> {
 
-        @Override
-        public boolean hasNext() {
-            return (i.get() < count);
+        public FileLoadIterator(int maxFetches) {
+            super(maxFetches);
         }
 
         @Override
-        public HttpRequestPrototype next() {
-            int curr =i.getAndIncrement();
-            if(curr < count) {
-                if(size > 1)
-                    return testRequests.get(curr % count);
-                else
-                    return  testRequests.get(0);
-            }
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("immutable list");
+        public HttpRequestPrototype doNext(int curr, int max) {
+            if(size > 1)
+                return testRequests.get(curr % max);
+            else
+                return  testRequests.get(0);
         }
     }
 }

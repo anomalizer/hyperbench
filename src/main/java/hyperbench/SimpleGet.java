@@ -23,29 +23,17 @@ public class SimpleGet implements LoadSet {
 
     @Override
     public Iterator<HttpRequestPrototype> iterator() {
-        return new SimpleGetIterator();
+        return new SimpleGetIterator(count);
     }
 
-    private class SimpleGetIterator implements Iterator<HttpRequestPrototype> {
-
-        private final AtomicInteger i = new AtomicInteger(0);
-
-        @Override
-        public boolean hasNext() {
-            return (i.get() < count);
+    private class SimpleGetIterator extends CappedIterator<HttpRequestPrototype> {
+        public SimpleGetIterator(int maxFetches) {
+            super(maxFetches);
         }
 
         @Override
-        public HttpRequestPrototype next() {
-            if(i.getAndIncrement() < count) {
-                return req;
-            }
-            throw new NoSuchElementException();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException("immutable list");
+        public HttpRequestPrototype doNext(int curr, int max) {
+            return req;
         }
     }
 }
