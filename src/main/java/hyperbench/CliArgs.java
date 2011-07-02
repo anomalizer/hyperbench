@@ -14,4 +14,7 @@ public class CliArgs {
 
     @Parameter(names = "-c", description = "Max concurrency")
     public int concurrency = 1;
+
+    @Parameter(names = "-f", description = "Input file name")
+    public String filename;
 }

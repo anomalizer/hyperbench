@@ -1,0 +1,2 @@
+---
+- {method: GET,  url: "http://localhost:81/STL_doc/" }
