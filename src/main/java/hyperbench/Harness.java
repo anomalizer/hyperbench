@@ -49,7 +49,7 @@ public class Harness implements Runnable {
         logger.debug("Waiting for pending requests to finish");
         while(requests.get() != responses.get()) {
             //wait for things to finish, this is a semi-busy loop
-            logger.info("{} requests, {} done", requests.get(), responses.get());
+            logger.debug("{} requests, {} done", requests.get(), responses.get());
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
