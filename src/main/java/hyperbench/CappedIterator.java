@@ -36,5 +36,14 @@ public abstract class CappedIterator<T>  implements Iterator<T> {
         throw new UnsupportedOperationException("read-only iterator");
     }
 
+    /**
+     * This method will be invoked every time a legitimate call of next()
+     * is invoked. "Legitimate" here means that the fetch is lies within
+     * [0, maxFetchs). The current "progress" is available via the two
+     * arguments
+     *
+     * @param curr The current "fetch" count
+     * @param max The maximum number of elements that this iterator can return
+     */
     public abstract T doNext(int curr, int max);
 }
