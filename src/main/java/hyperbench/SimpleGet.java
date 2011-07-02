@@ -1,5 +1,8 @@
 package hyperbench;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
@@ -7,6 +10,7 @@ import java.util.Iterator;
 /**
  */
 public class SimpleGet implements LoadSet {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleGet.class);
 
     private final HttpRequestPrototype req;
     private final int count;
@@ -15,13 +19,18 @@ public class SimpleGet implements LoadSet {
         if(count < 1) {
             throw new RuntimeException("count must be greater than 1");
         }
-        req = new HttpRequestPrototype();
+
+        HttpRequestPrototype tmpreq = new HttpRequestPrototype();
         try {
-            req.setUrl(url);
+            tmpreq.setUrl(url);
         } catch (URISyntaxException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage());
+            tmpreq = null;
         } catch (UnknownHostException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            logger.error(e.getMessage());
+            tmpreq = null;
+        } finally {
+            req = tmpreq;
         }
 
         this.count = count;

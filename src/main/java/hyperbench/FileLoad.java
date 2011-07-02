@@ -1,5 +1,7 @@
 package hyperbench;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
@@ -13,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public class FileLoad implements LoadSet{
+    private static final Logger logger = LoggerFactory.getLogger(FileLoad.class);
+
     private final List<HttpRequestPrototype> testRequests = new ArrayList<HttpRequestPrototype>();
     private int size;
     private int count;
@@ -40,9 +44,9 @@ public class FileLoad implements LoadSet{
                     oneRequest.setUrl(url);
                     testRequests.add(oneRequest);
                 } catch (URISyntaxException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage());
                 } catch (UnknownHostException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e.getMessage());
                 }
             }
         }
