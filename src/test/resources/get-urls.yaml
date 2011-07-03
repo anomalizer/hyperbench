@@ -1,2 +1,4 @@
 ---
 - {method: GET,  url: "http://localhost:81/STL_doc/" }
+- {method: GET,  url: "http://localhost:81/dev-vcs/subversion/group__Revert.html"}
+- {method: GET,  url: "http://localhost/" }

@@ -43,7 +43,8 @@ public class HttpRequestPrototype {
     }
 
     public int getPort() {
-        return url.getPort();
+        int retval = url.getPort();
+        return retval == -1 ? 80 : retval;
     }
 
     public String getUriString() {
