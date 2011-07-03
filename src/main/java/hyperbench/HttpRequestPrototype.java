@@ -1,10 +1,12 @@
 package hyperbench;
 
+import com.inmobi.instrumentation.TimingAccumulator;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpVersion;
+import sun.font.StandardTextSource;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -19,6 +21,8 @@ public class HttpRequestPrototype {
     private HttpRequest request;
     private int port;
     private String uriString;
+
+    private final TimingAccumulator stats = new TimingAccumulator();
 
     public void setUrl(String urlString) throws URISyntaxException, UnknownHostException {
         URI url = new URI(urlString);
@@ -61,5 +65,9 @@ public class HttpRequestPrototype {
 
     public void addHeader(String name, String value) {
         throw new UnsupportedOperationException("unimplemented");
+    }
+
+    public TimingAccumulator getStatsCounter() {
+        return stats;
     }
 }
