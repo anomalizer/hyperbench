@@ -26,7 +26,7 @@ public class Cli {
             l = new FileLoad(opts.filename, opts.requests);
         }
 
-        Thread t = new Thread(new Harness(l.iterator(), opts.concurrency), "load generator");
+        Thread t = new Thread(new Harness(l.workloadIterator(), opts.concurrency), "load generator");
         t.start();
         t.join();
     }

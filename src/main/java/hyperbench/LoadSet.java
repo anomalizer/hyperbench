@@ -5,5 +5,5 @@ import java.util.Iterator;
 /**
  */
 public interface LoadSet {
-    public Iterator<HttpRequestPrototype> iterator();
+    public Iterator<HttpRequestPrototype> workloadIterator();
 }
