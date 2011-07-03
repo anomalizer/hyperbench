@@ -1,6 +1,7 @@
 package hyperbench;
 
 import com.beust.jcommander.JCommander;
+import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +27,12 @@ public class Cli {
             l = new FileLoad(opts.filename, opts.requests);
         }
 
-        Thread t = new Thread(new Harness(l.workloadIterator(), opts.concurrency), "load generator");
+        Thread t = new Thread(new Harness(l.workloadGenerator(), opts.concurrency), "load generator");
         t.start();
         t.join();
+
+        for(HttpRequestPrototype tmp : l.contents() ) {
+            logger.info("url: {} invoke: {} avg-time {}",  new Object[] {tmp.getUriString(), tmp.getStatsCounter().getInvocationCount(), tmp.getStatsCounter().getCumulativeNanoseconds()/tmp.getStatsCounter().getInvocationCount()/1e9});
+        }
     }
 }

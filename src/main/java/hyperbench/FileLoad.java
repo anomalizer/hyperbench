@@ -56,8 +56,13 @@ public class FileLoad implements LoadSet{
     }
 
     @Override
-    public Iterator<HttpRequestPrototype> workloadIterator() {
+    public Iterator<HttpRequestPrototype> workloadGenerator() {
         return new FileLoadIterator(count);
+    }
+
+    @Override
+    public List<HttpRequestPrototype> contents() {
+        return testRequests;
     }
 
     private class FileLoadIterator extends CappedIterator<HttpRequestPrototype> {
