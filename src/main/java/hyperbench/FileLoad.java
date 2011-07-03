@@ -17,7 +17,7 @@ import java.util.Map;
 public class FileLoad implements LoadSet{
     private static final Logger logger = LoggerFactory.getLogger(FileLoad.class);
 
-    private final List<HttpRequestPrototype> testRequests = new ArrayList<HttpRequestPrototype>();
+    private List<HttpRequestPrototype> testRequests;
     private int size;
     private int count;
 
@@ -29,6 +29,8 @@ public class FileLoad implements LoadSet{
     private void doYaml(InputStream is) {
         Yaml yaml = new Yaml();
         List<Map> requests = (List<Map>) yaml.load(is);
+        testRequests = new ArrayList<HttpRequestPrototype>(requests.size());
+
         for( Map m : requests) {
 
             String methodName = (String) m.get("method");
