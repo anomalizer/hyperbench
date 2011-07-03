@@ -14,15 +14,20 @@ import java.net.UnknownHostException;
 /**
  */
 public class HttpRequestPrototype {
-    private URI url = null;
     private InetAddress addr = null;
     private String host = null;
     private HttpRequest request;
+    private int port;
+    private String uriString;
 
     public void setUrl(String urlString) throws URISyntaxException, UnknownHostException {
-        this.url = new URI(urlString);
+        URI url = new URI(urlString);
         host = url.getHost();
         addr = InetAddress.getByName(host);
+        uriString = urlString;
+        port = url.getPort();
+        if(port == -1)
+            port = 80;
 
         request = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, getUriString());
         request.setHeader(HttpHeaders.Names.HOST, getHost());
@@ -43,12 +48,11 @@ public class HttpRequestPrototype {
     }
 
     public int getPort() {
-        int retval = url.getPort();
-        return retval == -1 ? 80 : retval;
+        return port;
     }
 
     public String getUriString() {
-        return url.toASCIIString();
+        return uriString;
     }
 
     public HttpRequest getHttpRequest() {
