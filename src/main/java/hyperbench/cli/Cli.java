@@ -1,6 +1,11 @@
-package hyperbench;
+package hyperbench.cli;
 
 import com.beust.jcommander.JCommander;
+import hyperbench.input.FileLoad;
+import hyperbench.input.HttpRequestPrototype;
+import hyperbench.input.LoadSet;
+import hyperbench.input.SimpleGet;
+import hyperbench.request.Harness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +31,12 @@ public class Cli {
             l = new FileLoad(opts.filename, opts.requests);
         }
 
-        Thread t = new Thread(new Harness(l.iterator(), opts.concurrency), "load generator");
+        Thread t = new Thread(new Harness(l.workloadGenerator(), opts.concurrency), "load generator");
         t.start();
         t.join();
+
+        for(HttpRequestPrototype tmp : l.contents() ) {
+            logger.info("url: {} stats {}",  tmp.getUriString(), tmp.stats() );
+        }
     }
 }

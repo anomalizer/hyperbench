@@ -1,5 +1,6 @@
-package hyperbench;
+package hyperbench.input;
 
+import hyperbench.request.CappedIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -14,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class FileLoad implements LoadSet{
+public class FileLoad implements LoadSet {
     private static final Logger logger = LoggerFactory.getLogger(FileLoad.class);
 
     private List<HttpRequestPrototype> testRequests;
@@ -56,8 +57,13 @@ public class FileLoad implements LoadSet{
     }
 
     @Override
-    public Iterator<HttpRequestPrototype> iterator() {
+    public Iterator<HttpRequestPrototype> workloadGenerator() {
         return new FileLoadIterator(count);
+    }
+
+    @Override
+    public List<HttpRequestPrototype> contents() {
+        return testRequests;
     }
 
     private class FileLoadIterator extends CappedIterator<HttpRequestPrototype> {

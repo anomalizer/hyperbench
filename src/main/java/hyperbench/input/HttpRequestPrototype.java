@@ -1,5 +1,8 @@
-package hyperbench;
+package hyperbench.input;
 
+import hyperbench.stats.AveragingRequestGroupTracker;
+import hyperbench.stats.RequestGroupTracker;
+import hyperbench.stats.RequestTracker;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
@@ -19,6 +22,8 @@ public class HttpRequestPrototype {
     private HttpRequest request;
     private int port;
     private String uriString;
+
+    private final RequestGroupTracker stats = new AveragingRequestGroupTracker();
 
     public void setUrl(String urlString) throws URISyntaxException, UnknownHostException {
         URI url = new URI(urlString);
@@ -61,5 +66,13 @@ public class HttpRequestPrototype {
 
     public void addHeader(String name, String value) {
         throw new UnsupportedOperationException("unimplemented");
+    }
+
+    public RequestTracker newTrackerInstance() {
+        return stats.newTrackerInstance();
+    }
+
+    public String stats() {
+        return stats.toString();
     }
 }

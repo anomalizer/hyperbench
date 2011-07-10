@@ -1,5 +1,6 @@
-package hyperbench;
+package hyperbench.netty;
 
+import hyperbench.request.HttpResponseHandler;
 import org.jboss.netty.channel.ChannelPipeline;
 import org.jboss.netty.channel.ChannelPipelineFactory;
 import org.jboss.netty.handler.codec.http.HttpClientCodec;
