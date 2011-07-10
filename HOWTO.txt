@@ -1,0 +1,25 @@
+How to compile?
+===============
+
+Get yourself the following:
+ * JDK 1.6
+ * maven 2.x
+Then, just run the following command:
+mvn install
+
+And your hyperbench is ready. Invoke your code as
+java target/hyperbench-1.0-jar-with-dependencies.jar <options>
+
+$ java  -jar target/hyperbench-1.0-jar-with-dependencies.jar
+Usage: <main class> [options]
+  Options:
+    -c   Max concurrency
+         Default: 1
+    -f   Input file name
+    -n   Total number of requests to be issued
+         Default: 1
+    -u   The url to be invoked
+
+
+Either one of -u or -f option needs to be passed. Example of the expected file
+format can be found in src/test/resources
