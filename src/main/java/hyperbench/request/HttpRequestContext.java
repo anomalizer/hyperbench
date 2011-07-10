@@ -22,7 +22,7 @@ class HttpRequestContext {
         stats.accumulateOutcome(TimingAccumulator.Outcome.UNHANDLED_FAILURE, startTime);
     }
 
-    public void gotResponse(long endTime) {
+    public void gotResponse(int statusCode, long endTime) {
         stats.accumulateOutcomeWithDelta(TimingAccumulator.Outcome.SUCCESS, endTime - startTime);
     }
 

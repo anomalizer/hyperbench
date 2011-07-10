@@ -20,7 +20,7 @@ public class HttpResponseHandler extends SimpleChannelUpstreamHandler {
         ConcurrentHashMap<Channel, HttpRequestContext> chm = (ConcurrentHashMap<Channel, HttpRequestContext>) ctx.getAttachment();
         HttpRequestContext rc = chm.get(e.getChannel());
         if(rc != null) {
-            rc.gotResponse(time);
+            rc.gotResponse(response.getStatus().getCode(), time);
         }
     }
 }
