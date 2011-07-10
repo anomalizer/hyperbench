@@ -1,4 +1,4 @@
-package hyperbench;
+package hyperbench.request;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

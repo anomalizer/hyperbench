@@ -1,7 +1,11 @@
-package hyperbench;
+package hyperbench.cli;
 
 import com.beust.jcommander.JCommander;
-import org.jboss.netty.handler.codec.http.HttpRequest;
+import hyperbench.input.FileLoad;
+import hyperbench.input.HttpRequestPrototype;
+import hyperbench.input.LoadSet;
+import hyperbench.input.SimpleGet;
+import hyperbench.request.Harness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

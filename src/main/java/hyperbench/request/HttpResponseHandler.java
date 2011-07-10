@@ -1,5 +1,6 @@
-package hyperbench;
+package hyperbench.request;
 
+import hyperbench.request.HttpRequestContext;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelHandlerContext;
 import org.jboss.netty.channel.MessageEvent;

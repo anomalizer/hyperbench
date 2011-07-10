@@ -77,7 +77,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>hyperbench.Cli</mainClass>
+                                    <mainClass>hyperbench.cli.Cli</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>

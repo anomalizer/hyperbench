@@ -1,4 +1,4 @@
-package hyperbench;
+package hyperbench.cli;
 
 import com.beust.jcommander.Parameter;
 

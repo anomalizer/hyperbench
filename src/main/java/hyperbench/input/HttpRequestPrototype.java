@@ -1,4 +1,4 @@
-package hyperbench;
+package hyperbench.input;
 
 import com.inmobi.instrumentation.TimingAccumulator;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
@@ -6,7 +6,6 @@ import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 import org.jboss.netty.handler.codec.http.HttpVersion;
-import sun.font.StandardTextSource;
 
 import java.net.InetAddress;
 import java.net.URI;

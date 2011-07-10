@@ -1,4 +1,4 @@
-package hyperbench;
+package hyperbench.input;
 
 import java.util.Iterator;
 import java.util.List;

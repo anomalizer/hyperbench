@@ -1,5 +1,7 @@
-package hyperbench;
+package hyperbench.request;
 
+import hyperbench.netty.NettyUtils;
+import hyperbench.input.HttpRequestPrototype;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.Channel;
 import org.jboss.netty.channel.ChannelFuture;

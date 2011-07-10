@@ -1,10 +1,9 @@
-package hyperbench;
+package hyperbench.request;
 
 import com.inmobi.instrumentation.TimingAccumulator;
+import hyperbench.input.HttpRequestPrototype;
 import org.jboss.netty.handler.codec.http.HttpRequest;
 
-/**
-*/
 class HttpRequestContext {
     private final HttpRequestPrototype hrp;
     private final TimingAccumulator stats;
