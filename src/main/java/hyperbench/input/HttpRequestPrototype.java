@@ -1,6 +1,8 @@
 package hyperbench.input;
 
-import com.inmobi.instrumentation.TimingAccumulator;
+import hyperbench.stats.AveragingRequestGroupTracker;
+import hyperbench.stats.RequestGroupTracker;
+import hyperbench.stats.RequestTracker;
 import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
 import org.jboss.netty.handler.codec.http.HttpHeaders;
 import org.jboss.netty.handler.codec.http.HttpMethod;
@@ -21,7 +23,7 @@ public class HttpRequestPrototype {
     private int port;
     private String uriString;
 
-    private final TimingAccumulator stats = new TimingAccumulator();
+    private final RequestGroupTracker stats = new AveragingRequestGroupTracker();
 
     public void setUrl(String urlString) throws URISyntaxException, UnknownHostException {
         URI url = new URI(urlString);
@@ -66,7 +68,11 @@ public class HttpRequestPrototype {
         throw new UnsupportedOperationException("unimplemented");
     }
 
-    public TimingAccumulator getStatsCounter() {
-        return stats;
+    public RequestTracker newTrackerInstance() {
+        return stats.newTrackerInstance();
+    }
+
+    public String stats() {
+        return stats.toString();
     }
 }

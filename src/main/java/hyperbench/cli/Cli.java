@@ -36,7 +36,7 @@ public class Cli {
         t.join();
 
         for(HttpRequestPrototype tmp : l.contents() ) {
-            logger.info("url: {} invoke: {} avg-time {}",  new Object[] {tmp.getUriString(), tmp.getStatsCounter().getInvocationCount(), tmp.getStatsCounter().getCumulativeNanoseconds()/tmp.getStatsCounter().getInvocationCount()/1e9});
+            logger.info("url: {} stats {}",  tmp.getUriString(), tmp.stats() );
         }
     }
 }

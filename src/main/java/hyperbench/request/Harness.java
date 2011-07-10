@@ -1,5 +1,6 @@
 package hyperbench.request;
 
+import hyperbench.stats.RequestTracker;
 import hyperbench.netty.NettyUtils;
 import hyperbench.input.HttpRequestPrototype;
 import org.jboss.netty.bootstrap.ClientBootstrap;
@@ -75,7 +76,7 @@ public class Harness implements Runnable {
             HttpRequestContext context = new HttpRequestContext(r);
 
             logger.debug("connecting");
-            context.start();
+            context.getTracker().start();
             ChannelFuture future = bootstrap.connect(new InetSocketAddress(r.getHostAddress(), r.getPort()));
             future.addListener(new ConnectHandler(context));
         } catch (InterruptedException e) {
@@ -109,7 +110,7 @@ public class Harness implements Runnable {
 
                 ch.write(r.getHttpRequest());
             } else {
-                r.connectFail();
+                r.getTracker().connectFail();
                 requestCleanup();
                 logger.error("connection failed {}", future.getCause().getMessage());
             }
