@@ -17,8 +17,7 @@ public class HttpResponseHandler extends SimpleChannelUpstreamHandler {
     public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
         HttpResponse response = (HttpResponse) e.getMessage();
         long time = System.nanoTime();
-        ConcurrentHashMap<Channel, HttpRequestContext> chm = (ConcurrentHashMap<Channel, HttpRequestContext>) ctx.getAttachment();
-        HttpRequestContext rc = chm.get(e.getChannel());
+        HttpRequestContext rc = (HttpRequestContext) ctx.getAttachment();
         if(rc != null) {
             rc.getTracker().recordResponse(response.getStatus().getCode());
         }
