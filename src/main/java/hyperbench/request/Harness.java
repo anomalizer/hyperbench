@@ -30,8 +30,6 @@ public class Harness implements Runnable {
     private final AtomicInteger requests = new AtomicInteger();
     private final AtomicInteger responses = new AtomicInteger();
 
-    private static final ConcurrentHashMap<Channel, HttpRequestContext> chm = new ConcurrentHashMap<Channel, HttpRequestContext>();
-
     public Harness(Iterator<HttpRequestPrototype> requests, int maxConcurrency) {
         iter = requests;
         concurrencyLimiter = new Semaphore(maxConcurrency);
@@ -105,8 +103,7 @@ public class Harness implements Runnable {
 
                 Channel ch = future.getChannel();
                 ch.getCloseFuture().addListener(rc);
-                chm.put(ch, r);
-                ch.getPipeline().getContext(HttpResponseHandler.class).setAttachment(chm);
+                ch.getPipeline().getContext(HttpResponseHandler.class).setAttachment(r);
 
                 ch.write(r.getHttpRequest());
             } else {
@@ -120,7 +117,6 @@ public class Harness implements Runnable {
     private class RequestCleanup implements ChannelFutureListener {
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
-            chm.remove(future.getChannel());
             requestCleanup();
             logger.debug("finished one request");
         }
