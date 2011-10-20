@@ -41,10 +41,24 @@ public class FileLoad implements LoadSet {
                 continue;
             }
 
-            if(methodName.equals("GET")) {
+            if("GET".equals(methodName) || "POST".equals(methodName)) {
                 HttpRequestPrototype oneRequest = new HttpRequestPrototype();
+
                 try {
-                    oneRequest.setUrl(url);
+                    oneRequest.setUrl(url, methodName);
+
+                    Object body = m.get("body");
+                    if(body != null) {
+                        oneRequest.setBody(body);
+                    }
+
+                    Map<String, String> headers = (Map) m.get("headers");
+                    if(headers != null) {
+                        for(Map.Entry<String, String> e: headers.entrySet()) {
+                            oneRequest.addHeader(e.getKey(), e.getValue());
+                        }
+                    }
+
                     testRequests.add(oneRequest);
                 } catch (URISyntaxException e) {
                     logger.error(e.getMessage());

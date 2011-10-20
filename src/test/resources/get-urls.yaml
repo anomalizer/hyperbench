@@ -6,3 +6,21 @@
     GET
   url:
     http://localhost:81/app-doc/doxygen/arch.html
+- {method: GET,  url: "http://localhost/tmp/post.php"}
+- {method: POST,  url: "http://localhost/tmp/post.php"}
+- method:
+    POST
+  url:
+    http://localhost/tmp/post.php
+  body: |
+    This is an arbitrary
+    HTTP POST body that has
+    multiline content
+- method:
+    POST
+  url:
+    http://localhost/tmp/post.php
+  body: |
+    This is an arbitrary
+    HTTP POST body that has
+    multiline content
