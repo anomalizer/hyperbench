@@ -20,7 +20,6 @@
     POST
   url:
     http://localhost/tmp/post.php
-  body: |
-    This is an arbitrary
-    HTTP POST body that has
-    multiline content
+  body:
+    key=value1111111111111111111111111
+  headers: {Content-type: "application/x-www-form-urlencoded"}
