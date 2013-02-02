@@ -109,7 +109,7 @@ public class Harness implements Runnable {
                 ch.pipeline().context(HttpResponseHandler.class).attr(STATE).set(r);
 
                 logger.debug("About to issue request");
-                ch.write(r.getHttpRequest());
+                ch.write(r.getHttpRequest().getHttpRequest());
                 logger.info("issued request");
             } else {
                 r.getTracker().connectFail();
