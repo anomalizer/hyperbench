@@ -1,23 +1,15 @@
 package hyperbench.request;
 
-import hyperbench.stats.RequestTracker;
 import hyperbench.input.HttpRequestPrototype;
-import org.jboss.netty.handler.codec.http.HttpRequest;
+import hyperbench.stats.RequestTracker;
+import lombok.Getter;
 
 class HttpRequestContext {
-    private final HttpRequestPrototype hrp;
-    private final RequestTracker tracker;
+    @Getter private final HttpRequestPrototype httpRequest;
+    @Getter private final RequestTracker tracker;
 
     public HttpRequestContext(HttpRequestPrototype hrp) {
-        this.hrp = hrp;
+        this.httpRequest = hrp;
         this.tracker = hrp.newTrackerInstance();
-    }
-
-    public HttpRequest getHttpRequest() {
-        return hrp.getHttpRequest();
-    }
-
-    public RequestTracker getTracker() {
-        return tracker;
     }
 }
