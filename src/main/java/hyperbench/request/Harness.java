@@ -1,6 +1,6 @@
 package hyperbench.request;
 
-import hyperbench.input.HttpRequestPrototype;
+import hyperbench.input.HttpRequestBuilder;
 import hyperbench.netty.NettyUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -24,7 +24,7 @@ public class Harness implements Runnable {
 
     final static Logger logger = LoggerFactory.getLogger(Harness.class);
 
-    private final Iterator<HttpRequestPrototype> iter;
+    private final Iterator<HttpRequestBuilder.Request> iter;
     private final Semaphore concurrencyLimiter;
     private final Bootstrap bootstrap;
 
@@ -33,7 +33,7 @@ public class Harness implements Runnable {
 
     private final RequestCleanup rc = new RequestCleanup();
 
-    public Harness(Iterator<HttpRequestPrototype> requests, int maxConcurrency) {
+    public Harness(Iterator<HttpRequestBuilder.Request> requests, int maxConcurrency) {
         iter = requests;
         concurrencyLimiter = new Semaphore(maxConcurrency);
         bootstrap = NettyUtils.getClientBootstrap();
@@ -44,7 +44,7 @@ public class Harness implements Runnable {
         logger.info("Starting the test");
         while(true) {
             try {
-                HttpRequestPrototype r = iter.next();
+                HttpRequestBuilder.Request r = iter.next();
                 fire(r);
             } catch(NoSuchElementException e){
                 logger.info("All requests issued");
@@ -69,16 +69,16 @@ public class Harness implements Runnable {
         logger.info("end of test...............................................................");
     }
 
-    private void fire(HttpRequestPrototype r) {
+    private void fire(HttpRequestBuilder.Request r) {
         logger.debug("Trying to get a ticket");
         try {
             concurrencyLimiter.acquire();
             requests.incrementAndGet();
-            HttpRequestContext context = new HttpRequestContext(r);
+            HttpRequestContext context = new HttpRequestContext(r.getRequest());
 
             logger.debug("Got a ticket, now trying to connect");
             context.getTracker().start();
-            bootstrap.remoteAddress(new InetSocketAddress(r.getHostAddress(), r.getPort()));
+            bootstrap.remoteAddress(new InetSocketAddress(r.getAddress(), r.getPort()));
             ChannelFuture future = bootstrap.connect();
             future.addListener(new ConnectHandler(context));
             logger.debug("async connect issued");
@@ -110,7 +110,7 @@ public class Harness implements Runnable {
                 ch.pipeline().context(HttpResponseHandler.class).attr(STATE).set(r);
 
                 logger.debug("About to issue request");
-                ch.write(r.getHttpRequest().getHttpRequest());
+                ch.write(r.getHttpRequest());
                 logger.info("issued request");
             } else {
                 r.getTracker().connectFail();

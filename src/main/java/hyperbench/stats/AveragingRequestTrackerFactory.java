@@ -1,16 +1,24 @@
 package hyperbench.stats;
 
+import javax.inject.Named;
+import javax.inject.Provider;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class AveragingRequestGroupTracker implements RequestGroupTracker{
+/**
+ * Records averages over multiple trackers
+ *
+ * Each tracker instance is still meant for single use only
+ */
+@Named("metric-group-avg")
+public final class AveragingRequestTrackerFactory implements Provider<RequestTracker> {
     private final AtomicInteger starts = new AtomicInteger(0);
     private final AtomicInteger connectFails = new AtomicInteger(0);
     private final AtomicInteger responses = new AtomicInteger(0);
 
     private final AtomicLong cumulativeSuccessDuration = new AtomicLong(0);
 
-    private class ARequestTracker implements RequestTracker {
+    private final class ARequestTracker implements RequestTracker {
         private long startTime;
 
         @Override
@@ -38,7 +46,7 @@ public class AveragingRequestGroupTracker implements RequestGroupTracker{
     }
 
     @Override
-    public RequestTracker newTrackerInstance() {
+    public RequestTracker get() {
         return new ARequestTracker();
     }
 

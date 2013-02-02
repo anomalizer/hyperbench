@@ -4,7 +4,6 @@ import hyperbench.request.HttpResponseHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.http.HttpChunkAggregator;
 import io.netty.handler.codec.http.HttpClientCodec;
 
 public class HttpClientPipelineFactory extends ChannelInitializer<SocketChannel> {
@@ -14,8 +13,7 @@ public class HttpClientPipelineFactory extends ChannelInitializer<SocketChannel>
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast("http", new HttpClientCodec());
-        pipeline.addLast("aggregator", new HttpChunkAggregator(MAX_CONTENT_LENGTH));
+        pipeline.addLast("http", new HttpClientCodec(4096, 8192, MAX_CONTENT_LENGTH));
         pipeline.addLast("handler", new HttpResponseHandler());
     }
 }

@@ -1,7 +1,7 @@
 package hyperbench.netty;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.socket.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**

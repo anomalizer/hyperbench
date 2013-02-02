@@ -24,7 +24,7 @@ public class HttpResponseHandler extends ChannelInboundMessageHandlerAdapter<Htt
         long time = System.nanoTime();
         HttpRequestContext rc = ctx.attr(Harness.STATE).get();
         if(rc != null) {
-            rc.getTracker().recordResponse(msg.getStatus().getCode());
+            rc.getTracker().recordResponse(msg.getStatus().code());
         }
     }
 }

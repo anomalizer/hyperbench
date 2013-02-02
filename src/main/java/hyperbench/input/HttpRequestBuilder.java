@@ -1,31 +1,46 @@
 package hyperbench.input;
 
-import hyperbench.stats.AveragingRequestGroupTracker;
-import hyperbench.stats.RequestGroupTracker;
 import hyperbench.stats.RequestTracker;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
-//TODO: really horrible API design needs cleanup
-public class HttpRequestPrototype {
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequestPrototype.class);
+@Slf4j
+public class HttpRequestBuilder {
+    @AllArgsConstructor
+    @Getter
+    public static final class Request {
+        private HttpRequest request;
+        private InetAddress address;
+        private int port;
+    }
 
     @Getter private InetAddress hostAddress = null;
     @Getter private String host = null;
-    @Getter private HttpRequest httpRequest;
     @Getter private int port;
     @Getter private String uriString;
+    private ByteBuf body;
 
-    private final RequestGroupTracker stats = new AveragingRequestGroupTracker();
+    private final Provider<RequestTracker> stats;
+    private HttpMethod method;
+    private Map<String, String> headers = new HashMap<String, String>();
+
+    @Inject
+    public HttpRequestBuilder(Provider<RequestTracker> stats) {
+        this.stats = stats;
+    }
 
     public void setUrl(String urlString) throws URISyntaxException, UnknownHostException {
         setUrl(urlString, HttpMethod.GET);
@@ -52,24 +67,20 @@ public class HttpRequestPrototype {
         if(port == -1)
             port = 80;
 
-        httpRequest = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, getUriString());
-        httpRequest.setHeader(HttpHeaders.Names.HOST, getHost());
-        httpRequest.setHeader(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
-
         String protocol = url.getScheme();
         if( !("http".equals(protocol)) ) {
             throw new UnsupportedOperationException("Protocol " + protocol + "is not supported");
         }
+
+        this.method = method;
     }
 
     public void addHeader(String name, String value) {
-        if(httpRequest != null) {
-            httpRequest.addHeader(name, value);
-        }
+        headers.put(name, value);
     }
 
     public RequestTracker newTrackerInstance() {
-        return stats.newTrackerInstance();
+        return stats.get();
     }
 
     public String stats() {
@@ -86,10 +97,24 @@ public class HttpRequestPrototype {
     }
 
     public void setBody(byte[] body, boolean makeCopy) {
-        if(httpRequest != null) {
-            final ByteBuf cb = makeCopy ? Unpooled.copiedBuffer(body) : Unpooled.wrappedBuffer(body);
-            httpRequest.setHeader("Content-Length", cb.array().length);
-            httpRequest.setContent(cb);
+        this.body = makeCopy ? Unpooled.copiedBuffer(body) : Unpooled.wrappedBuffer(body);
+    }
+
+    public Request build() {
+        HttpRequest httpRequest;
+        if(null == body) {
+            httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, getUriString());
+        } else {
+            httpRequest = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, method, getUriString(), body);
+            httpRequest.headers().set("Content-Length", body.array().length);
         }
+        httpRequest.headers().set(HttpHeaders.Names.HOST, getHost());
+        httpRequest.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.CLOSE);
+
+        for(Map.Entry<String, String> h: headers.entrySet()) {
+            httpRequest.headers().add(h.getKey(), h.getValue());
+        }
+
+        return new Request(httpRequest, hostAddress, port);
     }
 }

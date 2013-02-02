@@ -1,10 +1,12 @@
 package hyperbench.input;
 
 import hyperbench.request.CappedIterator;
+import hyperbench.stats.RequestTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.inject.Provider;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -18,19 +20,21 @@ import java.util.Map;
 public class FileLoad implements LoadSet {
     private static final Logger logger = LoggerFactory.getLogger(FileLoad.class);
 
-    private List<HttpRequestPrototype> testRequests;
+    private List<HttpRequestBuilder.Request> testRequests;
     private int size;
     private int count;
+    private Provider<RequestTracker> tracker;
 
-    public FileLoad(String filename, int count) throws FileNotFoundException {
+    public FileLoad(String filename, int count, Provider<RequestTracker> tracker) throws FileNotFoundException {
         doYaml(new FileInputStream(filename));
         this.count = count;
+        this.tracker = tracker;
     }
 
     private void doYaml(InputStream is) {
         Yaml yaml = new Yaml();
         List<Map> requests = (List<Map>) yaml.load(is);
-        testRequests = new ArrayList<HttpRequestPrototype>(requests.size());
+        testRequests = new ArrayList<HttpRequestBuilder.Request>(requests.size());
 
         for( Map m : requests) {
 
@@ -42,7 +46,7 @@ public class FileLoad implements LoadSet {
             }
 
             if("GET".equals(methodName) || "POST".equals(methodName)) {
-                HttpRequestPrototype oneRequest = new HttpRequestPrototype();
+                HttpRequestBuilder oneRequest = new HttpRequestBuilder(tracker);
 
                 try {
                     oneRequest.setUrl(url, methodName);
@@ -58,8 +62,8 @@ public class FileLoad implements LoadSet {
                             oneRequest.addHeader(e.getKey(), e.getValue());
                         }
                     }
-
-                    testRequests.add(oneRequest);
+                    oneRequest.build();
+                    testRequests.add(oneRequest.build());
                 } catch (URISyntaxException e) {
                     logger.error(e.getMessage());
                 } catch (UnknownHostException e) {
@@ -71,23 +75,23 @@ public class FileLoad implements LoadSet {
     }
 
     @Override
-    public Iterator<HttpRequestPrototype> workloadGenerator() {
+    public Iterator<HttpRequestBuilder.Request> workloadGenerator() {
         return new FileLoadIterator(count);
     }
 
     @Override
-    public List<HttpRequestPrototype> contents() {
+    public List<HttpRequestBuilder.Request> contents() {
         return testRequests;
     }
 
-    private class FileLoadIterator extends CappedIterator<HttpRequestPrototype> {
+    private class FileLoadIterator extends CappedIterator<HttpRequestBuilder.Request> {
 
         public FileLoadIterator(int maxFetches) {
             super(maxFetches);
         }
 
         @Override
-        public HttpRequestPrototype doNext(int curr, int max) {
+        public HttpRequestBuilder.Request doNext(int curr, int max) {
             return testRequests.get(curr % size);
         }
     }

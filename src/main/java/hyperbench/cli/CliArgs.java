@@ -3,6 +3,7 @@ package hyperbench.cli;
 import com.beust.jcommander.Parameter;
 
 /**
+ * A jcommander friendly class for command line arguments
  */
 public class CliArgs {
 

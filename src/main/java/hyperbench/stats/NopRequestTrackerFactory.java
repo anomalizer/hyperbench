@@ -1,6 +1,10 @@
 package hyperbench.stats;
 
-public class NopRequestGroupTracker implements RequestGroupTracker {
+import javax.inject.Named;
+import javax.inject.Provider;
+
+@Named("metric-nop")
+public class NopRequestTrackerFactory implements Provider<RequestTracker> {
     private static class NopTracker implements RequestTracker {
 
         @Override
@@ -16,7 +20,7 @@ public class NopRequestGroupTracker implements RequestGroupTracker {
     private static final RequestTracker r = new NopTracker();
 
     @Override
-    public RequestTracker newTrackerInstance() {
+    public RequestTracker get() {
         return r;
     }
 }

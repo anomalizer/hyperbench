@@ -6,7 +6,7 @@ import java.util.List;
 /**
  */
 public interface LoadSet {
-    public Iterator<HttpRequestPrototype> workloadGenerator();
+    public Iterator<HttpRequestBuilder.Request> workloadGenerator();
 
-    public List<HttpRequestPrototype> contents();
+    public List<HttpRequestBuilder.Request> contents();
 }
