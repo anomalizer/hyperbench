@@ -7,7 +7,7 @@
     </layout>
   </appender>
 
-  <root level="${root-level:-INFO}">
+  <root level="${root-level:-WARN}">
     <appender-ref ref="STDOUT" />
   </root>
 </configuration>
