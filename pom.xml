@@ -8,16 +8,6 @@
     <artifactId>hyperbench</artifactId>
     <version>1.2.0-SNAPSHOT</version>
 
-    <repositories>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>repository.jboss.org</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <dependency>
             <groupId>io.netty</groupId>
