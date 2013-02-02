@@ -7,9 +7,9 @@
         </layout>
     </appender>
 
-    <root level="${root-level:-INFO}">
+    <root level="${root-level:-WARN}">
         <appender-ref ref="STDOUT" />
     </root>
 
-    <logger name="hyperbench.request" level="${request-log:-WARN}"/>
+    <logger name="hyperbench.cli" level="INFO"/>
 </configuration>
