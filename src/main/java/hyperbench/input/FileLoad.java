@@ -47,7 +47,7 @@ public class FileLoad implements LoadSet {
                 try {
                     oneRequest.setUrl(url, methodName);
 
-                    Object body = m.get("body");
+                    String body = (String) m.get("body");
                     if(body != null) {
                         oneRequest.setBody(body);
                     }

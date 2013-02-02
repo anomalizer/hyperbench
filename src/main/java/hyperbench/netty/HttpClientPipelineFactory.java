@@ -1,18 +1,17 @@
 package hyperbench.netty;
 
 import hyperbench.request.HttpResponseHandler;
-import org.jboss.netty.channel.ChannelPipeline;
-import org.jboss.netty.channel.ChannelPipelineFactory;
-import org.jboss.netty.handler.codec.http.HttpClientCodec;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.http.HttpClientCodec;
 
-import static org.jboss.netty.channel.Channels.pipeline;
+public class HttpClientPipelineFactory extends ChannelInitializer<SocketChannel> {
 
-public class HttpClientPipelineFactory implements ChannelPipelineFactory {
-
-    public ChannelPipeline getPipeline() throws Exception {
-        ChannelPipeline pipeline = pipeline();
+    @Override
+    public void initChannel(SocketChannel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
         pipeline.addLast("codec", new HttpClientCodec());
         pipeline.addLast("handler", new HttpResponseHandler());
-        return pipeline;
     }
 }

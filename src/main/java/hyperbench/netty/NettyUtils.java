@@ -1,29 +1,27 @@
 package hyperbench.netty;
 
-import org.jboss.netty.bootstrap.ClientBootstrap;
-import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
-
-import java.util.concurrent.Executors;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.socket.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
  */
 public class NettyUtils {
-    private static ClientBootstrap bootstrap = null;
+    private static Bootstrap bootstrap = null;
 
-    public synchronized static ClientBootstrap getClientBootstrap() {
+    public synchronized static Bootstrap getClientBootstrap() {
         if(bootstrap == null) {
-            bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory(
-                    Executors.newCachedThreadPool(),
-                    Executors.newCachedThreadPool()));
-
-            bootstrap.setPipelineFactory(new HttpClientPipelineFactory());
+            bootstrap = new Bootstrap();
+            bootstrap.group(new NioEventLoopGroup())
+                    .channel(NioSocketChannel.class)
+                    .handler(new HttpClientPipelineFactory());
         }
         return bootstrap;
     }
 
     public synchronized static void shutdown() {
         if(bootstrap != null) {
-            bootstrap.releaseExternalResources();
+            bootstrap.shutdown();
             bootstrap = null;
         }
     }

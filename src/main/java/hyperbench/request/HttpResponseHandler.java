@@ -1,28 +1,25 @@
 package hyperbench.request;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundMessageHandlerAdapter;
+import io.netty.handler.codec.http.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.netty.channel.ChannelHandlerContext;
-import org.jboss.netty.channel.ExceptionEvent;
-import org.jboss.netty.channel.MessageEvent;
-import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
-import org.jboss.netty.handler.codec.http.HttpResponse;
 
 /**
  */
 @Slf4j
-public class HttpResponseHandler extends SimpleChannelUpstreamHandler {
+public class HttpResponseHandler extends ChannelInboundMessageHandlerAdapter<HttpResponse> {
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
-        log.warn("Aiee, got an exception", e.getCause());
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        log.warn("Aiee, got an exception", cause);
     }
 
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) {
-        HttpResponse response = (HttpResponse) e.getMessage();
+    public void messageReceived(ChannelHandlerContext ctx, HttpResponse msg) throws Exception {
         long time = System.nanoTime();
-        HttpRequestContext rc = (HttpRequestContext) ctx.getAttachment();
+        HttpRequestContext rc = ctx.attr(Harness.STATE).get();
         if(rc != null) {
-            rc.getTracker().recordResponse(response.getStatus().getCode());
+            rc.getTracker().recordResponse(msg.getStatus().getCode());
         }
     }
 }

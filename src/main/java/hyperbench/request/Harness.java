@@ -1,31 +1,32 @@
 package hyperbench.request;
 
-import hyperbench.stats.RequestTracker;
-import hyperbench.netty.NettyUtils;
 import hyperbench.input.HttpRequestPrototype;
-import org.jboss.netty.bootstrap.ClientBootstrap;
-import org.jboss.netty.channel.Channel;
-import org.jboss.netty.channel.ChannelFuture;
-import org.jboss.netty.channel.ChannelFutureListener;
+import hyperbench.netty.NettyUtils;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  */
 public class Harness implements Runnable {
+    static final AttributeKey<HttpRequestContext> STATE =
+            new AttributeKey<HttpRequestContext>("MyHandler.httpRequest");
 
     final static Logger logger = LoggerFactory.getLogger(Harness.class);
 
     private final Iterator<HttpRequestPrototype> iter;
     private final Semaphore concurrencyLimiter;
-    private final ClientBootstrap bootstrap;
+    private final Bootstrap bootstrap;
 
     private final AtomicInteger requests = new AtomicInteger();
     private final AtomicInteger responses = new AtomicInteger();
@@ -75,7 +76,8 @@ public class Harness implements Runnable {
 
             logger.debug("connecting");
             context.getTracker().start();
-            ChannelFuture future = bootstrap.connect(new InetSocketAddress(r.getHostAddress(), r.getPort()));
+            bootstrap.remoteAddress(new InetSocketAddress(r.getHostAddress(), r.getPort()));
+            ChannelFuture future = bootstrap.connect();
             future.addListener(new ConnectHandler(context));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -87,7 +89,7 @@ public class Harness implements Runnable {
         responses.incrementAndGet();
     }
 
-    private class ConnectHandler implements  ChannelFutureListener {
+    private class ConnectHandler implements ChannelFutureListener {
         private final HttpRequestContext r;
         private final RequestCleanup rc = new RequestCleanup();
 
@@ -101,15 +103,15 @@ public class Harness implements Runnable {
                 // Go do actual request
                 logger.debug("connected successfully");
 
-                Channel ch = future.getChannel();
-                ch.getCloseFuture().addListener(rc);
-                ch.getPipeline().getContext(HttpResponseHandler.class).setAttachment(r);
+                Channel ch = future.channel();
+                ch.closeFuture().addListener(rc);
+                ch.pipeline().context(HttpResponseHandler.class).attr(STATE).set(r);
 
                 ch.write(r.getHttpRequest());
             } else {
                 r.getTracker().connectFail();
                 requestCleanup();
-                logger.error("connection failed {}", future.getCause().getMessage());
+                logger.error("connection failed", future.cause());
             }
         }
     }
