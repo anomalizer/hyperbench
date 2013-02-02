@@ -3,14 +3,10 @@ package hyperbench.input;
 import hyperbench.stats.AveragingRequestGroupTracker;
 import hyperbench.stats.RequestGroupTracker;
 import hyperbench.stats.RequestTracker;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.http.*;
 import lombok.Getter;
-import org.jboss.netty.buffer.ChannelBuffer;
-import org.jboss.netty.buffer.ChannelBuffers;
-import org.jboss.netty.handler.codec.http.DefaultHttpRequest;
-import org.jboss.netty.handler.codec.http.HttpHeaders;
-import org.jboss.netty.handler.codec.http.HttpMethod;
-import org.jboss.netty.handler.codec.http.HttpRequest;
-import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,14 +77,17 @@ public class HttpRequestPrototype {
     }
 
 
-    public void setBody(Object body) {
+    public void setBody(String body) {
+        setBody(body.getBytes());
+    }
+
+    public void setBody(byte[] body) {
+        setBody(body, false);
+    }
+
+    public void setBody(byte[] body, boolean makeCopy) {
         if(httpRequest != null) {
-            ChannelBuffer cb = null;
-            if(body instanceof String) {
-                cb = ChannelBuffers.wrappedBuffer(((String) body).getBytes());
-            } else {
-                cb = ChannelBuffers.wrappedBuffer((byte[]) body);
-            }
+            final ByteBuf cb = makeCopy ? Unpooled.copiedBuffer(body) : Unpooled.wrappedBuffer(body);
             httpRequest.setHeader("Content-Length", cb.array().length);
             httpRequest.setContent(cb);
         }
