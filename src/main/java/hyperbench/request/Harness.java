@@ -31,6 +31,8 @@ public class Harness implements Runnable {
     private final AtomicInteger requests = new AtomicInteger();
     private final AtomicInteger responses = new AtomicInteger();
 
+    private final RequestCleanup rc = new RequestCleanup();
+
     public Harness(Iterator<HttpRequestPrototype> requests, int maxConcurrency) {
         iter = requests;
         concurrencyLimiter = new Semaphore(maxConcurrency);
@@ -92,7 +94,6 @@ public class Harness implements Runnable {
 
     private class ConnectHandler implements ChannelFutureListener {
         private final HttpRequestContext r;
-        private final RequestCleanup rc = new RequestCleanup();
 
         public ConnectHandler(HttpRequestContext r) {
             this.r = r;
