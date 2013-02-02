@@ -1,6 +1,5 @@
 package hyperbench.netty;
 
-import hyperbench.netty.HttpClientPipelineFactory;
 import org.jboss.netty.bootstrap.ClientBootstrap;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
 
