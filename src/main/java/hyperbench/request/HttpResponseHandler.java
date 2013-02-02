@@ -1,5 +1,6 @@
 package hyperbench.request;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundMessageHandlerAdapter;
 import io.netty.handler.codec.http.HttpResponse;
@@ -12,6 +13,10 @@ public class HttpResponseHandler extends ChannelInboundMessageHandlerAdapter<Htt
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         log.warn("Aiee, got an exception", cause);
+        final Channel channel = ctx.channel();
+        if( (null != channel) && channel.isOpen()) {
+            channel.close();
+        }
     }
 
     @Override
