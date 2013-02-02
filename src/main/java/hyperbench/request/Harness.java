@@ -74,11 +74,12 @@ public class Harness implements Runnable {
             requests.incrementAndGet();
             HttpRequestContext context = new HttpRequestContext(r);
 
-            logger.debug("connecting");
+            logger.debug("Got a ticket, now trying to connect");
             context.getTracker().start();
             bootstrap.remoteAddress(new InetSocketAddress(r.getHostAddress(), r.getPort()));
             ChannelFuture future = bootstrap.connect();
             future.addListener(new ConnectHandler(context));
+            logger.debug("async connect issued");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -101,13 +102,15 @@ public class Harness implements Runnable {
         public void operationComplete(ChannelFuture future) throws Exception {
             if(future.isSuccess()) {
                 // Go do actual request
-                logger.debug("connected successfully");
+                logger.info("connected successfully");
 
                 Channel ch = future.channel();
                 ch.closeFuture().addListener(rc);
                 ch.pipeline().context(HttpResponseHandler.class).attr(STATE).set(r);
 
+                logger.debug("About to issue request");
                 ch.write(r.getHttpRequest());
+                logger.info("issued request");
             } else {
                 r.getTracker().connectFail();
                 requestCleanup();
