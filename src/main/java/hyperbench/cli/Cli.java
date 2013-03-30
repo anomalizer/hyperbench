@@ -5,8 +5,8 @@ import hyperbench.input.FileLoad;
 import hyperbench.input.LoadSet;
 import hyperbench.input.SimpleGet;
 import hyperbench.request.Harness;
+import hyperbench.stats.AveragingRequestTrackerFactory;
 import hyperbench.stats.RequestTracker;
-import hyperbench.stats.YammerTrackFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public class Cli {
         }
 
         logger.info("Preparing requests");
-        final Provider<RequestTracker> tracker = new YammerTrackFactory();
+        final Provider<RequestTracker> tracker = new AveragingRequestTrackerFactory();
         if(opts.filename == null) {
             l = new SimpleGet(opts.url, opts.requests, tracker);
         } else {
