@@ -5,6 +5,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 
 public class HttpClientPipelineFactory extends ChannelInitializer<SocketChannel> {
 
@@ -13,7 +14,8 @@ public class HttpClientPipelineFactory extends ChannelInitializer<SocketChannel>
     @Override
     public void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast("http", new HttpClientCodec(4096, 8192, MAX_CONTENT_LENGTH));
+        pipeline.addLast("http", new HttpClientCodec());
+        pipeline.addLast("aggregator", new HttpObjectAggregator(MAX_CONTENT_LENGTH));
         pipeline.addLast("handler", new HttpResponseHandler());
     }
 }

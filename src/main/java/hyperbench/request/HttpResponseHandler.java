@@ -21,13 +21,12 @@ public class HttpResponseHandler extends ChannelInboundMessageHandlerAdapter<Htt
 
     @Override
     public void messageReceived(ChannelHandlerContext ctx, HttpResponse msg) throws Exception {
-        log.trace("Received response  -------------------------------");
-        long time = System.nanoTime();
+        log.trace("Received response {}", msg);
         HttpRequestContext rc = ctx.attr(Harness.STATE).get();
         if(rc != null) {
             rc.getTracker().recordResponse(msg.getStatus().code());
         } else {
-            log.warn("");
+            log.warn("Code should never reach here");
         }
         final Channel channel = ctx.channel();
         channel.close();
