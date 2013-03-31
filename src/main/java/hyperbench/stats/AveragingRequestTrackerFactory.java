@@ -1,5 +1,7 @@
 package hyperbench.stats;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.inject.Named;
 import javax.inject.Provider;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -10,6 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * Each tracker instance is still meant for single use only
  */
+@Slf4j
 @Named("metric-group-avg")
 public final class AveragingRequestTrackerFactory implements Provider<RequestTracker> {
     private final AtomicInteger starts = new AtomicInteger(0);
