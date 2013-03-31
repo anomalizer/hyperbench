@@ -25,7 +25,7 @@ public class HttpResponseHandler extends ChannelInboundMessageHandlerAdapter<Ful
     public void messageReceived(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
         if(log.isTraceEnabled()) {
             final List<String> encodingHeader = msg.headers().getAll("Content-Encoding");
-            final String encoding = (encodingHeader.size() == 1) ? encodingHeader.get(0): "utf-8";
+            final String encoding = (encodingHeader.size() == 1) ? encodingHeader.get(0): "ISO-8859-1";
             log.trace("Received response {}", new String(msg.data().array(), encoding));
         }
         HttpRequestContext rc = ctx.attr(Harness.STATE).get();
